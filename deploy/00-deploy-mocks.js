@@ -12,15 +12,15 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
     if (developmentChains.includes(network.name)) {
         log("Local network detected! Deploying mocks..")
         //deploy a mock vrfCoordinator
+    
+        await deploy("VRFCoordinatorV2Mock", {
+            from: deployer,
+            log: true,
+            args: args,
+        })
+        log("Mocks Deployed!")
+        log("-----------------------------------------")
     }
-
-    await deploy("VRFCoordinatorV2Mock", {
-        from: deployer,
-        log: true,
-        args: args,
-    })
-    log("Mocks Deployed!")
-    log("-----------------------------------------")
 }
 
 module.exports.tags = ["all", "mocks"]

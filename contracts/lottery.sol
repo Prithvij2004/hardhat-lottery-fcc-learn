@@ -11,7 +11,7 @@ pragma solidity ^0.8.7;
 
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/KeeperCompatibleInterface.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/AutomationCompatibleInterface.sol";
 
 error Lottery__NotEnoughETHEntered();
 error Lottery__TransferFailed();
@@ -25,7 +25,7 @@ error Lottery__UpkeepNotNeeded(uint256 currentBalance, uint256 numPlayers, uint2
  *
  */
 
-contract Lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
+contract Lottery is VRFConsumerBaseV2, AutomationCompatibleInterface {
     /*type declarations */
     enum LotteryState {
         OPEN,
@@ -88,7 +88,7 @@ contract Lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
     /**
      * @dev This is the function that Chainlink keeper nodes call
      * they look for the 'upKeepNeeded' to return true.
-     * The following should be true in order ro reqturn true:
+     * The following should be true in order ro return true:
      * 1. Our time interval should be passed.
      * 2. The lottery should have at least 1 player, and have some ETH.
      * 3. Our subscription is funded with LINK.
@@ -132,6 +132,7 @@ contract Lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
             i_callbackGasLimit,
             NUM_WORDS
         );
+        // This is reduntant
         emit RequestedLotteryWinner(requestId);
     }
 
@@ -183,5 +184,9 @@ contract Lottery is VRFConsumerBaseV2, KeeperCompatibleInterface {
 
     function getRequestConfirmations() public pure returns (uint256) {
         return REQUEST_CONFIRMATION;
+    }
+
+    function getInterval() public view returns (uint256) {
+        return i_interval;
     }
 }
